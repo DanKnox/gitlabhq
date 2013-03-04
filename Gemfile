@@ -97,6 +97,9 @@ gem "colored"
 # GitLab settings
 gem 'settingslogic'
 
+# Wiki
+gem "gollum"
+
 # Misc
 gem "foreman"
 gem "git"
