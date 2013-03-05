@@ -52,6 +52,11 @@ describe GollumWiki do
 
       FileUtils.rm_rf wiki.send(:path_to_repo)
     end
+
+    it "raises CouldNotCreateWikiError if it can't create the wiki repository" do
+      Gitlab::Shell.any_instance.stub(:add_repository).and_return(false)
+      expect { GollumWiki.new(project, user).wiki }.to raise_exception(GollumWiki::CouldNotCreateWikiError)
+    end
   end
 
   describe "#pages" do
@@ -65,7 +70,7 @@ describe GollumWiki do
     end
 
     it "returns an array of Gollum::Page instances" do
-      @pages.first.should be_a Gollum::Page
+      @pages.first.should be_a GollumWiki::Page
     end
 
     it "returns the correct number of pages" do
@@ -75,7 +80,7 @@ describe GollumWiki do
 
   describe "#find_page" do
     before do
-      create_page("index", "This is an awesome Gollum Wiki")
+      create_page("index page", "This is an awesome Gollum Wiki")
     end
 
     after do
@@ -83,12 +88,17 @@ describe GollumWiki do
     end
 
     it "returns the latest version of the page if it exists" do
-      page = subject.find_page("index")
-      page.name.should == "index"
+      page = subject.find_page("index page")
+      page.name.should == "index page"
     end
 
     it "returns nil if the page does not exist" do
       subject.find_page("non-existant").should == nil
+    end
+
+    it "can find a page by slug" do
+      page = subject.find_page("index-page")
+      page.name.should == "index page"
     end
   end
 

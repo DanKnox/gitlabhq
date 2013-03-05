@@ -1,5 +1,7 @@
 class GollumWiki
 
+  class CouldNotCreateWikiError < StandardError; end
+
   attr_reader :error_message
 
   def initialize(project, user = nil)
@@ -16,11 +18,15 @@ class GollumWiki
   end
 
   def pages
-    wiki.pages
+    wiki.pages.map { |page| Page.new(page) }
   end
 
   def find_page(title)
-    wiki.page(title)
+    if page = wiki.paged(title)
+      Page.new(page)
+    else
+      nil
+    end
   end
 
   def create_page(title, content)
@@ -40,8 +46,11 @@ class GollumWiki
   private
 
   def create_repo!
-    shell.add_repository(path_with_namespace)
-    Gollum::Wiki.new(path_to_repo)
+    if gitlab_shell.add_repository(path_with_namespace)
+      Gollum::Wiki.new(path_to_repo)
+    else
+      raise CouldNotCreateWikiError
+    end
   end
 
   def commit_details(message = '')
@@ -52,12 +61,33 @@ class GollumWiki
     @project.path_with_namespace + ".wiki"
   end
 
-  def shell
-    @shell ||= Gitlab::Shell.new
+  def gitlab_shell
+    @gitlab_shell ||= Gitlab::Shell.new
   end
 
   def path_to_repo
     @path_to_repo ||= File.join(Gitlab.config.gitlab_shell.repos_path, "#{path_with_namespace}.git")
+  end
+
+  class Page < Delegator
+
+    def initialize(page)
+      super
+      @page = page
+    end
+
+    def __getobj__
+      @page
+    end
+
+    def __setobj__(obj)
+      @page = obj
+    end
+
+    def to_param
+      @page.name
+    end
+
   end
 
 end
