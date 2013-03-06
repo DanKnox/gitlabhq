@@ -1,45 +1,10 @@
 GIT
   remote: https://github.com/ctran/annotate_models.git
-  revision: be4e26825b521f0b2d86b181e2dff89901aa9b1e
+  revision: 8bd159c7a484093fde84beaa9e6398f25ddacf09
   specs:
     annotate (2.6.0.beta1)
       activerecord (>= 2.3.0)
       rake (>= 0.8.7)
-
-GIT
-  remote: https://github.com/gitlabhq/grack.git
-  revision: ba46f3b0845c6a09d488ae6abdce6ede37e227e8
-  ref: ba46f3b0845c6a09d488ae6abdce6ede37e227e8
-  specs:
-    grack (1.0.0)
-      rack (~> 1.4.1)
-
-GIT
-  remote: https://github.com/gitlabhq/grit.git
-  revision: 9e98418ce2d654485b967003726aa2706a10060b
-  ref: 9e98418ce2d654485b967003726aa2706a10060b
-  specs:
-    grit (2.5.0)
-      diff-lcs (~> 1.1)
-      mime-types (~> 1.15)
-      posix-spawn (~> 0.3.6)
-
-GIT
-  remote: https://github.com/gitlabhq/grit_ext.git
-  revision: 2d1b2f13cabc02520405985fccb2a0abfcba9907
-  ref: 2d1b2f13cabc02520405985fccb2a0abfcba9907
-  specs:
-    grit_ext (0.6.2)
-      charlock_holmes (~> 0.6.9)
-
-GIT
-  remote: https://github.com/gitlabhq/pygments.rb.git
-  revision: db1da0343adf86b49bdc3add04d02d2e80438d38
-  branch: master
-  specs:
-    pygments.rb (0.3.2)
-      posix-spawn (~> 0.3.6)
-      yajl-ruby (~> 1.1.0)
 
 GIT
   remote: https://github.com/gitlabhq/raphael-rails.git
@@ -79,14 +44,16 @@ GEM
       multi_json (~> 1.0)
     acts-as-taggable-on (2.3.3)
       rails (~> 3.0)
-    addressable (2.3.2)
+    addressable (2.3.3)
+    albino (1.3.3)
+      posix-spawn (>= 0.3.6)
     arel (3.0.2)
     awesome_print (1.1.0)
     backports (2.6.7)
     bcrypt-ruby (3.0.1)
-    better_errors (0.3.2)
+    better_errors (0.7.0)
       coderay (>= 1.0.0)
-      erubis (>= 2.7.0)
+      erubis (>= 2.6.6)
     binding_of_caller (0.7.1)
       debug_inspector (>= 0.0.1)
     bootstrap-sass (2.2.1.1)
@@ -105,26 +72,26 @@ GEM
     celluloid (0.12.4)
       facter (>= 1.6.12)
       timers (>= 1.0.0)
-    charlock_holmes (0.6.9)
-    childprocess (0.3.8)
+    charlock_holmes (0.6.9.1)
+    childprocess (0.3.9)
       ffi (~> 1.0, >= 1.0.11)
     chosen-rails (0.9.8)
       railties (~> 3.0)
       thor (~> 0.14)
     code_analyzer (0.3.1)
       sexp_processor
-    coderay (1.0.8)
+    coderay (1.0.9)
     coffee-rails (3.2.2)
       coffee-script (>= 2.2.0)
       railties (~> 3.2.0)
     coffee-script (2.2.0)
       coffee-script-source
       execjs
-    coffee-script-source (1.4.0)
+    coffee-script-source (1.6.1)
     colored (1.2)
     colorize (0.5.8)
     connection_pool (1.0.0)
-    crack (0.3.1)
+    crack (0.3.2)
     daemons (1.1.9)
     database_cleaner (0.9.1)
     debug_inspector (0.0.2)
@@ -146,25 +113,25 @@ GEM
       activesupport (>= 3.2)
     erubis (2.7.0)
     escape_utils (0.2.4)
-    eventmachine (1.0.0)
+    eventmachine (1.0.1)
     execjs (1.4.0)
       multi_json (~> 1.0)
     facter (1.6.17)
-    factory_girl (4.1.0)
+    factory_girl (4.2.0)
       activesupport (>= 3.0.0)
-    factory_girl_rails (4.1.0)
-      factory_girl (~> 4.1.0)
+    factory_girl_rails (4.2.1)
+      factory_girl (~> 4.2.0)
       railties (>= 3.0.0)
-    faraday (0.8.4)
+    faraday (0.8.6)
       multipart-post (~> 1.1)
     faye-websocket (0.4.7)
       eventmachine (>= 0.12.0)
     ffaker (1.15.0)
     ffi (1.4.0)
-    font-awesome-sass-rails (3.0.0.1)
+    font-awesome-sass-rails (3.0.2.2)
       railties (>= 3.1.1)
       sass-rails (>= 3.1.1)
-    foreman (0.60.2)
+    foreman (0.61.0)
       thor (>= 0.13.6)
     gemoji (1.2.1)
     gherkin-ruby (0.2.1)
@@ -174,8 +141,16 @@ GEM
       escape_utils (~> 0.2.3)
       mime-types (~> 1.19)
       pygments.rb (>= 0.2.13)
-    github-markdown (0.5.3)
     github-markup (0.7.5)
+    gitlab-grack (1.0.0)
+      rack (~> 1.4.1)
+    gitlab-grit (1.0.0)
+      diff-lcs (~> 1.1)
+      mime-types (~> 1.15)
+      posix-spawn (~> 0.3.6)
+    gitlab-pygments.rb (0.3.2)
+      posix-spawn (~> 0.3.6)
+      yajl-ruby (~> 1.1.0)
     gitlab_meta (5.0)
     gitlab_omniauth-ldap (1.0.2)
       net-ldap (~> 0.2.2)
@@ -183,18 +158,20 @@ GEM
       pyu-ruby-sasl (~> 0.0.3.1)
       rubyntlm (~> 0.1.1)
     gitlab_yaml_db (1.0.0)
-    gollum (2.4.11)
-      github-markdown (~> 0.5.3)
-      github-markup (>= 0.7.4, < 1.0.0)
-      grit (~> 2.5.0)
-      mustache (>= 0.99.4, < 1.0.0)
-      nokogiri (~> 1.5.5)
-      pygments.rb (~> 0.3.2)
-      sanitize (~> 2.0.3)
-      sinatra (~> 1.3.3)
-      stringex (~> 1.5.1)
-      useragent (~> 0.4.15)
+    gollum (1.3.1)
+      albino (~> 1.3.2)
+      github-markup (>= 0.4.0, < 1.0.0)
+      github-markup (>= 0.4.0, < 1.0.0)
+      grit (~> 2.4.1)
+      mustache (>= 0.11.2, < 1.0.0)
+      mustache (>= 0.11.2, < 1.0.0)
+      nokogiri (~> 1.4)
+      redcarpet
+      sanitize (~> 2.0.0)
+      sinatra (~> 1.0)
     gon (4.0.2)
+      actionpack (>= 2.3.0)
+      json
     grape (0.3.2)
       activesupport
       builder
@@ -208,13 +185,19 @@ GEM
     grape-entity (0.2.0)
       activesupport
       multi_json (>= 1.3.2)
+    grit (2.4.1)
+      diff-lcs (~> 1.1)
+      mime-types (~> 1.15)
+    grit_ext (0.6.2)
+      charlock_holmes (~> 0.6.9)
     growl (1.0.3)
-    guard (1.5.4)
-      listen (>= 0.4.2)
+    guard (1.6.2)
+      listen (>= 0.6.0)
       lumberjack (>= 1.0.2)
       pry (>= 0.9.10)
+      terminal-table (>= 1.4.3)
       thor (>= 0.14.6)
-    guard-rspec (2.1.2)
+    guard-rspec (2.5.0)
       guard (>= 1.1)
       rspec (~> 2.11)
     guard-spinach (0.0.2)
@@ -244,18 +227,18 @@ GEM
       jquery-rails
       railties (>= 3.1.0)
     json (1.7.7)
-    jwt (0.1.5)
+    jwt (0.1.6)
       multi_json (>= 1.0)
     kaminari (0.14.1)
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
     kgio (2.8.0)
-    launchy (2.1.2)
+    launchy (2.2.0)
       addressable (~> 2.3)
-    letter_opener (1.0.0)
-      launchy (>= 2.0.4)
-    libv8 (3.3.10.4)
-    listen (0.5.3)
+    letter_opener (1.1.0)
+      launchy (~> 2.2.0)
+    libv8 (3.11.8.13)
+    listen (0.7.3)
     lumberjack (1.0.2)
     mail (2.4.4)
       i18n (>= 0.4.0)
@@ -267,22 +250,22 @@ GEM
       sprockets (~> 2.0)
     multi_json (1.6.1)
     multi_xml (0.5.3)
-    multipart-post (1.1.5)
+    multipart-post (1.2.0)
     mustache (0.99.4)
     mysql2 (0.3.11)
     net-ldap (0.2.2)
     nokogiri (1.5.6)
     oauth (0.4.7)
-    oauth2 (0.8.0)
+    oauth2 (0.8.1)
       faraday (~> 0.8)
       httpauth (~> 0.1)
       jwt (~> 0.1.4)
       multi_json (~> 1.0)
       rack (~> 1.2)
-    omniauth (1.1.1)
+    omniauth (1.1.3)
       hashie (~> 1.2)
       rack
-    omniauth-github (1.0.3)
+    omniauth-github (1.1.0)
       omniauth (~> 1.0)
       omniauth-oauth2 (~> 1.1)
     omniauth-google-oauth2 (0.1.13)
@@ -305,14 +288,16 @@ GEM
       http_parser.rb (~> 0.5.3)
     polyglot (0.3.3)
     posix-spawn (0.3.6)
-    progressbar (0.12.0)
-    pry (0.9.10)
+    pry (0.9.12)
       coderay (~> 1.0.5)
       method_source (~> 0.8)
-      slop (~> 3.3.1)
+      slop (~> 3.4)
+    pygments.rb (0.4.2)
+      posix-spawn (~> 0.3.6)
+      yajl-ruby (~> 1.1.0)
     pyu-ruby-sasl (0.0.3.3)
-    quiet_assets (1.0.1)
-      railties (~> 3.1)
+    quiet_assets (1.0.2)
+      railties (>= 3.1, < 5.0)
     rack (1.4.5)
     rack-accept (0.4.5)
       rack (>= 0.4)
@@ -322,7 +307,7 @@ GEM
       rack (>= 1.1.3)
     rack-mount (0.8.3)
       rack (>= 1.0.0)
-    rack-protection (1.3.2)
+    rack-protection (1.4.0)
       rack
     rack-ssl (1.3.3)
       rack
@@ -339,14 +324,14 @@ GEM
     rails-dev-tweaks (0.6.1)
       actionpack (~> 3.1)
       railties (~> 3.1)
-    rails_best_practices (1.13.2)
+    rails_best_practices (1.13.4)
       activesupport
       awesome_print
       code_analyzer
       colored
       erubis
       i18n
-      progressbar
+      ruby-progressbar
     railties (3.2.12)
       actionpack (= 3.2.12)
       activesupport (= 3.2.12)
@@ -356,24 +341,25 @@ GEM
       thor (>= 0.14.6, < 2.0)
     raindrops (0.10.0)
     rake (10.0.3)
-    rb-fsevent (0.9.2)
-    rb-inotify (0.8.8)
+    rb-fsevent (0.9.3)
+    rb-inotify (0.9.0)
       ffi (>= 0.5.0)
     rdoc (3.12.2)
       json (~> 1.4)
     redcarpet (2.2.2)
-    redis (3.0.2)
+    redis (3.0.3)
     redis-namespace (1.2.1)
       redis (~> 3.0.0)
+    ref (1.0.2)
     request_store (1.0.5)
     rspec (2.12.0)
       rspec-core (~> 2.12.0)
       rspec-expectations (~> 2.12.0)
       rspec-mocks (~> 2.12.0)
-    rspec-core (2.12.0)
-    rspec-expectations (2.12.0)
+    rspec-core (2.12.2)
+    rspec-expectations (2.12.1)
       diff-lcs (~> 1.1.3)
-    rspec-mocks (2.12.0)
+    rspec-mocks (2.12.2)
     rspec-rails (2.12.2)
       actionpack (>= 3.0)
       activesupport (>= 3.0)
@@ -381,13 +367,13 @@ GEM
       rspec-core (~> 2.12.0)
       rspec-expectations (~> 2.12.0)
       rspec-mocks (~> 2.12.0)
+    ruby-progressbar (1.0.2)
     rubyntlm (0.1.1)
     rubyzip (0.9.9)
     sanitize (2.0.3)
       nokogiri (>= 1.4.4, < 1.6)
-      nokogiri (>= 1.4.4, < 1.6)
-    sass (3.2.5)
-    sass-rails (3.2.5)
+    sass (3.2.6)
+    sass-rails (3.2.6)
       railties (~> 3.2.0)
       sass (>= 3.1.10)
       tilt (~> 1.3)
@@ -397,16 +383,16 @@ GEM
     seed-fu (2.2.0)
       activerecord (~> 3.1)
       activesupport (~> 3.1)
-    selenium-webdriver (2.30.0)
+    selenium-webdriver (2.31.0)
       childprocess (>= 0.2.5)
       multi_json (~> 1.0)
       rubyzip
       websocket (~> 1.0.4)
     settingslogic (2.0.9)
-    sexp_processor (4.1.3)
+    sexp_processor (4.1.5)
     shoulda-matchers (1.3.0)
       activesupport (>= 3.0.0)
-    sidekiq (2.7.5)
+    sidekiq (2.8.0)
       celluloid (~> 0.12.0)
       connection_pool (~> 1.0)
       multi_json (~> 1)
@@ -416,18 +402,18 @@ GEM
       multi_json (~> 1.0)
       simplecov-html (~> 0.7.1)
     simplecov-html (0.7.1)
-    sinatra (1.3.3)
-      rack (~> 1.3, >= 1.3.6)
-      rack-protection (~> 1.2)
+    sinatra (1.3.5)
+      rack (~> 1.4)
+      rack-protection (~> 1.3)
       tilt (~> 1.3, >= 1.3.3)
     six (0.2.0)
     slim (1.3.6)
       temple (~> 0.5.5)
       tilt (~> 1.3.3)
-    slop (3.3.3)
-    spinach (0.7.0)
-      colorize
-      gherkin-ruby (~> 0.2.0)
+    slop (3.4.3)
+    spinach (0.8.0)
+      colorize (= 0.5.8)
+      gherkin-ruby (~> 0.2.1)
     spinach-rails (0.2.0)
       capybara (~> 2.0.0)
       railties (>= 3)
@@ -439,11 +425,12 @@ GEM
       tilt (~> 1.1, != 1.3.0)
     stamp (0.5.0)
     state_machine (1.1.2)
-    stringex (1.5.1)
     temple (0.5.5)
+    terminal-table (1.4.5)
     test_after_commit (0.0.1)
-    therubyracer (0.10.2)
-      libv8 (~> 3.3.10)
+    therubyracer (0.11.4)
+      libv8 (~> 3.11.8.12)
+      ref
     thin (1.5.0)
       daemons (>= 1.0.9)
       eventmachine (>= 0.12.6)
@@ -454,7 +441,7 @@ GEM
     treetop (1.4.12)
       polyglot
       polyglot (>= 0.3.1)
-    tzinfo (0.3.35)
+    tzinfo (0.3.36)
     uglifier (1.3.0)
       execjs (>= 0.3.0)
       multi_json (~> 1.0, >= 1.0.2)
@@ -462,15 +449,14 @@ GEM
       kgio (~> 2.6)
       rack
       raindrops (~> 0.7)
-    useragent (0.4.16)
     virtus (0.5.4)
       backports (~> 2.6.1)
       descendants_tracker (~> 0.0.1)
     warden (1.2.1)
       rack (>= 1.0)
-    webmock (1.9.0)
+    webmock (1.11.0)
       addressable (>= 2.2.7)
-      crack (>= 0.1.7)
+      crack (>= 0.3.2)
     websocket (1.0.7)
     xpath (1.0.0)
       nokogiri (~> 1.3)
@@ -504,16 +490,17 @@ DEPENDENCIES
   git
   github-linguist (~> 2.3.4)
   github-markup (~> 0.7.4)
+  gitlab-grack (~> 1.0.0)
+  gitlab-grit (~> 1.0.0)
+  gitlab-pygments.rb (~> 0.3.2)
   gitlab_meta (= 5.0)
   gitlab_omniauth-ldap (= 1.0.2)
   gitlab_yaml_db (= 1.0.0)
   gollum
   gon
-  grack!
   grape (~> 0.3.1)
   grape-entity (~> 0.2.0)
-  grit!
-  grit_ext!
+  grit_ext (~> 0.6.2)
   growl
   guard-rspec
   guard-spinach
@@ -527,14 +514,13 @@ DEPENDENCIES
   letter_opener
   modernizr (= 2.6.2)
   mysql2
-  omniauth (~> 1.1.1)
+  omniauth (~> 1.1.3)
   omniauth-github
   omniauth-google-oauth2
   omniauth-twitter
   pg
   poltergeist (= 1.1.0)
   pry
-  pygments.rb!
   quiet_assets (~> 1.0.1)
   rack-mini-profiler
   rails (= 3.2.12)

@@ -16,15 +16,17 @@ gem "pg", group: :postgres
 
 # Auth
 gem "devise"
-gem 'omniauth', "~> 1.1.1"
+gem 'omniauth', "~> 1.1.3"
 gem 'omniauth-google-oauth2'
 gem 'omniauth-twitter'
 gem 'omniauth-github'
 
-# GITLAB patched libs
-gem "grit",          git: "https://github.com/gitlabhq/grit.git",           ref: '9e98418ce2d654485b967003726aa2706a10060b'
-gem 'grack',         git: "https://github.com/gitlabhq/grack.git",          ref: 'ba46f3b0845c6a09d488ae6abdce6ede37e227e8'
-gem 'grit_ext',      git: "https://github.com/gitlabhq/grit_ext.git",       ref: '2d1b2f13cabc02520405985fccb2a0abfcba9907'
+# Extracting information from a git repository
+gem "gitlab-grit", '~> 1.0.0', require: 'grit'
+gem 'grit_ext', '~> 0.6.2'
+
+# Ruby/Rack Git Smart-HTTP Server Handler
+gem 'gitlab-grack', '~> 1.0.0', require: 'grack'
 
 # LDAP Auth
 gem 'gitlab_omniauth-ldap', '1.0.2', require: "omniauth-ldap"
@@ -33,7 +35,7 @@ gem 'gitlab_omniauth-ldap', '1.0.2', require: "omniauth-ldap"
 gem 'gitlab_yaml_db', '1.0.0', require: "yaml_db"
 
 # Syntax highlighter
-gem "pygments.rb",  git: "https://github.com/gitlabhq/pygments.rb.git", branch: "master"
+gem "gitlab-pygments.rb", '~> 0.3.2', require: 'pygments.rb'
 
 # Language detection
 gem "github-linguist", "~> 2.3.4" , require: "linguist"
