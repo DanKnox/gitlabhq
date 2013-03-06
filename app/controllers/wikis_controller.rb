@@ -2,24 +2,24 @@ class WikisController < ProjectResourceController
   before_filter :authorize_read_wiki!
   before_filter :authorize_write_wiki!, only: [:edit, :create, :history]
   before_filter :authorize_admin_wiki!, only: :destroy
+  before_filter :load_gollum_wiki
 
   def pages
-    @wiki_pages = @project.wikis.group(:slug).ordered
+    @wiki_pages = @gollum_wiki.pages
   end
 
   def show
-    @most_recent_wiki = @project.wikis.where(slug: params[:id]).ordered.first
     if params[:version_id]
-      @wiki = @project.wikis.find(params[:version_id])
+      @wiki = @gollum_wiki.find_page(params[:id], params[:version_id])
     else
-      @wiki = @most_recent_wiki
+      @wiki = @gollum_wiki.find_page(params[:id])
     end
 
     if @wiki
       render 'show'
     else
       if can?(current_user, :write_wiki, @project)
-        @wiki = @project.wikis.new(slug: params[:id])
+        @wiki = WikiPage.new(@gollum_wiki)
         render 'edit'
       else
         render 'empty'
@@ -28,16 +28,24 @@ class WikisController < ProjectResourceController
   end
 
   def edit
-    @wiki = @project.wikis.where(slug: params[:id]).ordered.first
-    @wiki = Wiki.regenerate_from @wiki
+    @wiki = @gollum_wiki.find_page(params[:id])
+  end
+
+  def update
+    @wiki = @gollum_wiki.find_page(params[:id])
+    if can?(current_user, :write_wiki, @project)
+      @wiki = WikiPage.new(@gollum_wiki)
+      render 'edit'
+    else
+      render 'empty'
+    end
   end
 
   def create
-    @wiki = @project.wikis.new(params[:wiki])
-    @wiki.user = current_user
+    @wiki = WikiPage.new(@gollum_wiki)
 
     respond_to do |format|
-      if @wiki.save
+      if @wiki.create(wiki_params)
         format.html { redirect_to [@project, @wiki], notice: 'Wiki was successfully updated.' }
       else
         format.html { render action: "edit" }
@@ -46,14 +54,33 @@ class WikisController < ProjectResourceController
   end
 
   def history
-    @wiki_pages = @project.wikis.where(slug: params[:id]).ordered
+    @wiki = @gollum_wiki.find_page(params[:id])
+
+    respond_to do |format|
+      if @wiki
+        format.html { @wiki_versions = @wiki.versions }
+      else
+        format.html { redirect_to project_wiki_path(@project, :index), notice: "Page not found" }
+      end
+    end
   end
 
   def destroy
-    @wikis = @project.wikis.where(slug: params[:id]).delete_all
+    @wiki = @gollum_wiki.find_page(params[:id])
+    @wiki.delete if @wiki
 
     respond_to do |format|
       format.html { redirect_to project_wiki_path(@project, :index), notice: "Page was successfully deleted" }
     end
+  end
+
+  private
+
+  def load_gollum_wiki
+    @gollum_wiki = GollumWiki.new(@project, current_user)
+  end
+
+  def wiki_params
+    params[:wiki].slice(:title, :content)
   end
 end
