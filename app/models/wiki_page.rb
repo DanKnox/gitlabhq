@@ -32,7 +32,7 @@ class WikiPage
     @wiki = wiki
     @page = page
     @persisted = persisted
-    @attributes = {}
+    @attributes = {}.with_indifferent_access
     set_attributes if persisted?
   end
 
@@ -45,7 +45,12 @@ class WikiPage
 
   # The formatted title of the page.
   def title
-    @attributes[:title]
+    @attributes[:title] || ""
+  end
+
+  # Sets the title of the page
+  def title=(new_title)
+    @attributes[:title] = new_title
   end
 
   # The raw content of the page.
@@ -129,6 +134,7 @@ class WikiPage
       errors.add(:base, wiki.error_message) if wiki.error_message
       @persisted = false
     end
+    @persisted
   end
 
 end

@@ -20,6 +20,7 @@ class WikisController < ProjectResourceController
     else
       if can?(current_user, :write_wiki, @project)
         @wiki = WikiPage.new(@gollum_wiki)
+        @wiki.title = params[:id]
         render 'edit'
       else
         render 'empty'
@@ -34,8 +35,11 @@ class WikisController < ProjectResourceController
   def update
     @wiki = @gollum_wiki.find_page(params[:id])
     if can?(current_user, :write_wiki, @project)
-      @wiki = WikiPage.new(@gollum_wiki)
-      render 'edit'
+      if @wiki.update(params[:wiki][:content])
+        redirect_to [@project, @wiki], notice: 'Wiki was successfully updated.'
+      else
+        render 'edit'
+      end
     else
       render 'empty'
     end
@@ -44,12 +48,10 @@ class WikisController < ProjectResourceController
   def create
     @wiki = WikiPage.new(@gollum_wiki)
 
-    respond_to do |format|
-      if @wiki.create(wiki_params)
-        format.html { redirect_to [@project, @wiki], notice: 'Wiki was successfully updated.' }
-      else
-        format.html { render action: "edit" }
-      end
+    if @wiki.create(wiki_params)
+      redirect_to [@project, @wiki], notice: 'Wiki was successfully updated.'
+    else
+      render action: "edit"
     end
   end
 

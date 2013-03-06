@@ -8,9 +8,9 @@
 
   .ui-box.ui-box-show
     .ui-box-head
-      = f.label :title
-      .input= f.text_field :title, class: 'span8'
-      = f.hidden_field :slug
+      %h3.page_title
+        = @wiki.title.titleize
+        = f.hidden_field :title, value: @wiki.title
     .ui-box-body
       .input
         %span.cgray

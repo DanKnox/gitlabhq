@@ -75,7 +75,7 @@ describe WikiPage do
   end
 
   before do
-    @wiki_attr = {title: "Index", content: "Home Page"}
+    @wiki_attr = {title: "Index", content: "Home Page", slug: ""}
   end
 
   describe "#create" do
