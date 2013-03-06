@@ -66,11 +66,11 @@ describe GollumWiki do
     end
 
     after do
-      destroy_page(@pages.first)
+      destroy_page(@pages.first.page)
     end
 
-    it "returns an array of Gollum::Page instances" do
-      @pages.first.should be_a GollumWiki::Page
+    it "returns an array of WikiPage instances" do
+      @pages.first.should be_a WikiPage
     end
 
     it "returns the correct number of pages" do
@@ -84,12 +84,12 @@ describe GollumWiki do
     end
 
     after do
-      destroy_page(subject.pages.first)
+      destroy_page(subject.pages.first.page)
     end
 
     it "returns the latest version of the page if it exists" do
       page = subject.find_page("index page")
-      page.name.should == "index page"
+      page.title.should == "index page"
     end
 
     it "returns nil if the page does not exist" do
@@ -98,20 +98,23 @@ describe GollumWiki do
 
     it "can find a page by slug" do
       page = subject.find_page("index-page")
-      page.name.should == "index page"
+      page.title.should == "index page"
+    end
+
+    it "returns a WikiPage instance" do
+      page = subject.find_page("index page")
+      page.should be_a WikiPage
     end
   end
 
   describe "#create_page" do
     after do
-      destroy_page(subject.pages.first)
+      destroy_page(subject.pages.first.page)
     end
 
     it "creates a new wiki page" do
       subject.create_page("test page", "this is content").should_not == false
-      page = subject.find_page("test page")
-      page.title.should == "test page"
-      page.raw_data.should == "this is content"
+      subject.pages.count.should == 1
     end
 
     it "returns false when a duplicate page exists" do
@@ -120,32 +123,37 @@ describe GollumWiki do
     end
 
     it "stores an error message when a duplicate page exists" do
-      subject.create_page("test page", "content")
-      subject.create_page("test page", "content")
+      2.times { subject.create_page("test page", "content") }
       subject.error_message.should =~ /Duplicate page:/
+    end
+  end
+
+  describe "#update_page" do
+    before do
+      create_page("update-page", "some content")
+      @page = subject.wiki.paged("update-page")
+    end
+
+    after do
+      destroy_page(@page)
+    end
+
+    it "updates the content of the page" do
+      subject.update_page(@page, "some other content")
+      page = subject.wiki.paged("update-page")
+      page.raw_data.should == "some other content"
     end
   end
 
   describe "#delete_page" do
     before do
       create_page("index", "some content")
+      @page = subject.wiki.paged("index")
     end
 
     it "deletes the page" do
-      subject.delete_page("index")
+      subject.delete_page(@page)
       subject.pages.count.should == 0
-    end
-  end
-
-  describe "#history" do
-    before do
-      create_page("index", "some content")
-    end
-
-    it "returns an array of all commits for the page" do
-      page = subject.find_page("index")
-      history = page.versions
-      history.count.should == 1
     end
   end
 

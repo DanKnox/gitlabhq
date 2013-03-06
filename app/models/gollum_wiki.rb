@@ -18,12 +18,12 @@ class GollumWiki
   end
 
   def pages
-    wiki.pages.map { |page| Page.new(page) }
+    wiki.pages.map { |page| WikiPage.new(self, page, true) }
   end
 
-  def find_page(title)
-    if page = wiki.paged(title)
-      Page.new(page)
+  def find_page(title, version = nil)
+    if page = wiki.page(title, version)
+      WikiPage.new(self, page, true)
     else
       nil
     end
@@ -37,9 +37,13 @@ class GollumWiki
     return false
   end
 
-  def delete_page(title)
-    message = "#{@user.username} deleted page: #{title}"
-    page = find_page(title)
+  def update_page(page, content)
+    message = "#{@user.username} updated page: #{page.title}"
+    wiki.update_page(page, page.name, :markdown, content, commit_details(message))
+  end
+
+  def delete_page(page)
+    message = "#{@user.username} deleted page: #{page.title}"
     wiki.delete_page(page, commit_details(message))
   end
 
@@ -67,27 +71,6 @@ class GollumWiki
 
   def path_to_repo
     @path_to_repo ||= File.join(Gitlab.config.gitlab_shell.repos_path, "#{path_with_namespace}.git")
-  end
-
-  class Page < Delegator
-
-    def initialize(page)
-      super
-      @page = page
-    end
-
-    def __getobj__
-      @page
-    end
-
-    def __setobj__(obj)
-      @page = obj
-    end
-
-    def to_param
-      @page.name
-    end
-
   end
 
 end

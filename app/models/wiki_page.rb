@@ -1,14 +1,32 @@
 class WikiPage
 
+  def self.model_name
+    @_model_name ||= ActiveModel::Name.new(self, Project, "wiki")
+  end
+
+  def self.param_key
+    "wiki"
+  end
+
+  def self.route_key
+    "title"
+  end
+
+  extend ActiveModel::Naming
   include ActiveModel::Validations
 
-  # The Gitlab GollumWiki instance
+  validates :title, presence: true
+  validates :content, presence: true
+
+  # The Gitlab GollumWiki instance.
   attr_reader :wiki
 
-  # The raw Gollum Page instance
+  # The raw Gollum Page instance.
   attr_reader :page
 
-  attr_reader :attributes
+  # The attributes Hash used for storing and validating
+  # new Page values before writing to the Gollum repository.
+  attr_accessor :attributes
 
   def initialize(wiki, page = nil, persisted = false)
     @wiki = wiki
@@ -18,25 +36,79 @@ class WikiPage
     set_attributes if persisted?
   end
 
-  # The escaped URL path of the page
+  # The escaped URL path of the page.
   def slug
-    @attributes[:slug]
+    @attributes[:slug] || "index"
   end
 
-  # The formatted title of the page
+  alias :to_param :slug
+
+  # The formatted title of the page.
   def title
     @attributes[:title]
   end
 
+  # The raw content of the page.
   def content
     @attributes[:content]
   end
 
-  def save
+  # The processed/formatted content of the page.
+  def formatted_content
+    @attributes[:formatted_content]
+  end
+
+  def create(attr = {})
+    @attributes.merge!(attr)
+    save :create_page, title, content
+  end
+
+  def update(new_content = "")
+    @attributes[:content] = new_content
+    save :update_page, @page, content
+  end
+
+  def delete
+    if wiki.delete_page(@page)
+      true
+    else
+      false
+    end
+  end
+
+  def versions
+    return [] unless persisted?
+    @page.versions
+  end
+
+  def user
+    email = @page.version.author.email
+
+    if user = User.find_by_email(email)
+      @user = user
+    else
+      @user = email
+    end
+  end
+
+  def created_at
+    @page.version.date
+  end
+
+  def author_in_gitlab?
+    user.is_a?(User)
+  end
+
+  def historical?
+    @page.historical?
   end
 
   def persisted?
-    @persisted
+    @persisted == true
+  end
+
+  def to_key
+    [:title]
   end
 
   private
@@ -44,7 +116,19 @@ class WikiPage
   def set_attributes
     attributes[:slug] = @page.escaped_url_path
     attributes[:title] = @page.title
-    attributes[:content] = @page.formatted_data
+    attributes[:content] = @page.raw_data
+    attributes[:formatted_content] = @page.formatted_data
+  end
+
+  def save(method, *args)
+    if valid? && wiki.send(method, *args)
+      @page = wiki.wiki.paged(title)
+      set_attributes
+      @persisted = true
+    else
+      errors.add(:base, wiki.error_message) if wiki.error_message
+      @persisted = false
+    end
   end
 
 end

@@ -20,7 +20,8 @@ describe WikiPage do
     wiki.wiki.write_page(name, :markdown, content, commit_details)
   end
 
-  def destroy_page(page)
+  def destroy_page(title)
+    page = wiki.wiki.paged(title)
     wiki.wiki.delete_page(page, commit_details)
   end
 
@@ -52,8 +53,114 @@ describe WikiPage do
       end
 
       it "sets the formatted content attribute" do
-        @wiki_page.content.should == "<p>test content</p>"
+        @wiki_page.content.should == "test content"
       end
+    end
+  end
+
+  describe "validations" do
+    before do
+      subject.attributes = {title: 'title', content: 'content'}
+    end
+
+    it "validates presence of title" do
+      subject.attributes.delete(:title)
+      subject.valid?.should be_false
+    end
+
+    it "validates presence of content" do
+      subject.attributes.delete(:content)
+      subject.valid?.should be_false
+    end
+  end
+
+  before do
+    @wiki_attr = {title: "Index", content: "Home Page"}
+  end
+
+  describe "#create" do
+    after do
+      destroy_page("Index")
+    end
+
+    context "with valid attributes" do
+      it "saves the wiki page" do
+        subject.create(@wiki_attr)
+        wiki.find_page("Index").should_not be_nil
+      end
+
+      it "returns true" do
+        subject.create(@wiki_attr).should == true
+      end
+    end
+  end
+
+  describe "#update" do
+    before do
+      create_page("Update", "content")
+      @page = wiki.find_page("Update")
+    end
+
+    after do
+      destroy_page("Update")
+    end
+
+    context "with valid attributes" do
+      it "updates the content of the page" do
+        @page.update("new content")
+        @page = wiki.find_page("Update")
+      end
+
+      it "returns true" do
+        @page.update("more content").should be_true
+      end
+    end
+  end
+
+  describe "#destroy" do
+    before do
+      create_page("Delete Page", "content")
+      @page = wiki.find_page("Delete Page")
+    end
+
+    it "should delete the page" do
+      @page.delete
+      wiki.pages.should be_empty
+    end
+
+    it "should return true" do
+      @page.delete.should == true
+    end
+  end
+
+  describe "#versions" do
+    before do
+      create_page("Update", "content")
+      @page = wiki.find_page("Update")
+    end
+
+    after do
+      destroy_page("Update")
+    end
+
+    it "returns an array of all commits for the page" do
+      history = @page.versions
+      @page.versions.count.should == 1
+    end
+  end
+
+  describe "#user" do
+    before do
+      create_page("Update", "content")
+      @page = wiki.find_page("Update")
+    end
+
+    after do
+      destroy_page("Update")
+    end
+
+    it "returns the user that last edited the page" do
+      @page.user.should == project.owner
     end
   end
 
