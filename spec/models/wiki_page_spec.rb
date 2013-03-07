@@ -55,6 +55,10 @@ describe WikiPage do
       it "sets the formatted content attribute" do
         @wiki_page.content.should == "test content"
       end
+
+      it "sets the format attribute" do
+        @wiki_page.format.should == "markdown"
+      end
     end
   end
 
@@ -75,7 +79,7 @@ describe WikiPage do
   end
 
   before do
-    @wiki_attr = {title: "Index", content: "Home Page", slug: ""}
+    @wiki_attr = {title: "Index", content: "Home Page", format: "markdown"}
   end
 
   describe "#create" do

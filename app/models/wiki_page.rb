@@ -48,7 +48,7 @@ class WikiPage
     @attributes[:title] || ""
   end
 
-  # Sets the title of the page
+  # Sets the title of the page.
   def title=(new_title)
     @attributes[:title] = new_title
   end
@@ -63,14 +63,21 @@ class WikiPage
     @attributes[:formatted_content]
   end
 
-  def create(attr = {})
-    @attributes.merge!(attr)
-    save :create_page, title, content
+  # The markup format for the page.
+  def format
+    @attributes[:format] || :markdown
   end
 
-  def update(new_content = "")
+  def create(attr = {})
+    @attributes.merge!(attr)
+    save :create_page, title, content, format
+  end
+
+  def update(new_content = "", format = :markdown)
     @attributes[:content] = new_content
-    save :update_page, @page, content
+    @attributes[:format] = format
+
+    save :update_page, @page, content, format
   end
 
   def delete
@@ -123,6 +130,7 @@ class WikiPage
     attributes[:title] = @page.title
     attributes[:content] = @page.raw_data
     attributes[:formatted_content] = @page.formatted_data
+    attributes[:format] = @page.format
   end
 
   def save(method, *args)

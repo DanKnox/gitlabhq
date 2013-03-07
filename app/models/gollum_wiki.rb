@@ -1,5 +1,17 @@
 class GollumWiki
 
+  MARKUPS = {
+    "Markdown"         => :markdown,
+    "Textile"          => :textile,
+    "RDoc"             => :rdoc,
+    "Org-mode"         => :org,
+    "Creole"           => :creole,
+    "reStructuredText" => :rest,
+    "AsciiDoc"         => :asciidoc,
+    "MediaWiki"        => :mediawiki,
+    "Pod"              => :post
+  }
+
   class CouldNotCreateWikiError < StandardError; end
 
   attr_reader :error_message
@@ -29,22 +41,23 @@ class GollumWiki
     end
   end
 
-  def create_page(title, content)
-    message = "#{@user.username} created page: #{title}"
-    wiki.write_page(title, :markdown, content, commit_details(message))
+  def create_page(title, content, format = :markdown, message = nil)
+    commit = commit_details(:updated, title, message)
+
+    wiki.write_page(title, format, content, commit)
   rescue Gollum::DuplicatePageError => e
     @error_message = "Duplicate page: #{e.message}"
     return false
   end
 
-  def update_page(page, content)
-    message = "#{@user.username} updated page: #{page.title}"
-    wiki.update_page(page, page.name, :markdown, content, commit_details(message))
+  def update_page(page, content, format = :markdown, message = nil)
+    commit = commit_details(:updated, page.title, message)
+
+    wiki.update_page(page, page.name, format, content, commit)
   end
 
-  def delete_page(page)
-    message = "#{@user.username} deleted page: #{page.title}"
-    wiki.delete_page(page, commit_details(message))
+  def delete_page(page, message = nil)
+    wiki.delete_page(page, commit_details(:deleted, page.title, message))
   end
 
   private
@@ -57,8 +70,14 @@ class GollumWiki
     end
   end
 
-  def commit_details(message = '')
-    {email: @user.email, name: @user.name, message: message}
+  def commit_details(action, message = nil, page = nil)
+    commit_message = message || default_message(:created)
+
+    {email: @user.email, name: @user.name, message: commit_message}
+  end
+
+  def default_message(action, title)
+    "#{@user.username} #{action} page: #{title}"
   end
 
   def path_with_namespace

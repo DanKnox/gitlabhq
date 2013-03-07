@@ -9,8 +9,11 @@
   .ui-box.ui-box-show
     .ui-box-head
       %h3.page_title
-        = @wiki.title.titleize
-        = f.hidden_field :title, value: @wiki.title
+        .edit-wiki-header
+          = @wiki.title.titleize
+          = f.hidden_field :title, value: @wiki.title
+          = f.select :format, options_for_select(GollumWiki::MARKUPS), {selected: @wiki.format.to_s}, class: "pull-right input-medium"
+          = f.label :format, class: "pull-right", style: "padding-right: 20px;"
     .ui-box-body
       .input
         %span.cgray
