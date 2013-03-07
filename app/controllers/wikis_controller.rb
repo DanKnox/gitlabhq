@@ -56,10 +56,8 @@ class WikisController < ProjectResourceController
   end
 
   def history
-    @wiki = @gollum_wiki.find_page(params[:id])
-
     respond_to do |format|
-      if @wiki
+      if @wiki = @gollum_wiki.find_page(params[:id])
         format.html { @wiki_versions = @wiki.versions }
       else
         format.html { redirect_to project_wiki_path(@project, :index), notice: "Page not found" }

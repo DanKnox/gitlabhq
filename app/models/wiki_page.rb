@@ -83,7 +83,7 @@ class WikiPage
 
   def versions
     return [] unless persisted?
-    @page.versions
+    @page.versions.map { |v| Commit.new(v) }
   end
 
   def user
