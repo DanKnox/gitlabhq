@@ -20,4 +20,5 @@
     = preserve do
       = @wiki.formatted_content.html_safe
 
-%p.time Last edited by #{@wiki.author_in_gitlab? ? link_to_member(@project, @wiki.user) : @wiki.user}, #{time_ago_in_words @wiki.created_at} ago
+- commit = CommitDecorator.new(@wiki.version)
+%p.time Last edited by #{commit.author_link(avatar: true, size: 16)} #{time_ago_in_words @wiki.created_at} ago

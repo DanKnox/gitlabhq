@@ -57,7 +57,15 @@ describe WikiPage do
       end
 
       it "sets the format attribute" do
-        @wiki_page.format.should == "markdown"
+        @wiki_page.format.should == :markdown
+      end
+
+      it "sets the message attribute" do
+        @wiki_page.message.should == "test commit"
+      end
+
+      it "sets the version attribute" do
+        @wiki_page.version.should be_a Commit
       end
     end
   end
@@ -150,21 +158,6 @@ describe WikiPage do
     it "returns an array of all commits for the page" do
       history = @page.versions
       @page.versions.count.should == 1
-    end
-  end
-
-  describe "#user" do
-    before do
-      create_page("Update", "content")
-      @page = wiki.find_page("Update")
-    end
-
-    after do
-      destroy_page("Update")
-    end
-
-    it "returns the user that last edited the page" do
-      @page.user.should == project.owner
     end
   end
 

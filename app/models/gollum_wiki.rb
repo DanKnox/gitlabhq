@@ -42,7 +42,7 @@ class GollumWiki
   end
 
   def create_page(title, content, format = :markdown, message = nil)
-    commit = commit_details(:updated, title, message)
+    commit = commit_details(:created, message, title)
 
     wiki.write_page(title, format, content, commit)
   rescue Gollum::DuplicatePageError => e
@@ -51,13 +51,13 @@ class GollumWiki
   end
 
   def update_page(page, content, format = :markdown, message = nil)
-    commit = commit_details(:updated, page.title, message)
+    commit = commit_details(:updated, message, page.title)
 
     wiki.update_page(page, page.name, format, content, commit)
   end
 
   def delete_page(page, message = nil)
-    wiki.delete_page(page, commit_details(:deleted, page.title, message))
+    wiki.delete_page(page, commit_details(:deleted, message, page.title))
   end
 
   private
@@ -70,8 +70,8 @@ class GollumWiki
     end
   end
 
-  def commit_details(action, message = nil, page = nil)
-    commit_message = message || default_message(:created)
+  def commit_details(action, message = nil, title = nil)
+    commit_message = message || default_message(action, title)
 
     {email: @user.email, name: @user.name, message: commit_message}
   end

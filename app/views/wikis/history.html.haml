@@ -11,7 +11,7 @@
       %th Last updated
       %th Format
   %tbody
-    - @wiki_versions.each_with_index do |version, i|
+    - @versions.each do |version|
       - commit = CommitDecorator.new(version)
       %tr
         %td

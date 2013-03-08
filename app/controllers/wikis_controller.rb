@@ -37,7 +37,7 @@ class WikisController < ProjectResourceController
 
     return render('empty') unless can?(current_user, :write_wiki, @project)
 
-    if @wiki.update(content, format)
+    if @wiki.update(content, format, message)
       redirect_to [@project, @wiki], notice: 'Wiki was successfully updated.'
     else
       render 'edit'
@@ -59,7 +59,7 @@ class WikisController < ProjectResourceController
   def history
     respond_to do |format|
       if @wiki = @gollum_wiki.find_page(params[:id])
-        format.html { @wiki_versions = @wiki.versions }
+        format.html { @versions = @wiki.versions }
       else
         format.html { redirect_to project_wiki_path(@project, :index), notice: "Page not found" }
       end
@@ -82,7 +82,7 @@ class WikisController < ProjectResourceController
   end
 
   def wiki_params
-    params[:wiki].slice(:title, :content, :format)
+    params[:wiki].slice(:title, :content, :format, :message)
   end
 
   def content
@@ -91,6 +91,10 @@ class WikisController < ProjectResourceController
 
   def format
     params[:wiki][:format]
+  end
+
+  def message
+    params[:wiki][:message]
   end
 
 end

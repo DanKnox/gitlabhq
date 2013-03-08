@@ -21,7 +21,7 @@ class WikiPage
   # The Gitlab GollumWiki instance.
   attr_reader :wiki
 
-  # The raw Gollum Page instance.
+  # The raw Gollum::Page instance.
   attr_reader :page
 
   # The attributes Hash used for storing and validating
@@ -36,29 +36,29 @@ class WikiPage
     set_attributes if persisted?
   end
 
-  # The escaped URL path of the page.
+  # The escaped URL path of this page.
   def slug
-    @attributes[:slug] || "index"
+    @attributes[:slug]
   end
 
   alias :to_param :slug
 
-  # The formatted title of the page.
+  # The formatted title of this page.
   def title
     @attributes[:title] || ""
   end
 
-  # Sets the title of the page.
+  # Sets the title of this page.
   def title=(new_title)
     @attributes[:title] = new_title
   end
 
-  # The raw content of the page.
+  # The raw content of this page.
   def content
     @attributes[:content]
   end
 
-  # The processed/formatted content of the page.
+  # The processed/formatted content of this page.
   def formatted_content
     @attributes[:formatted_content]
   end
@@ -68,47 +68,30 @@ class WikiPage
     @attributes[:format] || :markdown
   end
 
-  def create(attr = {})
-    @attributes.merge!(attr)
-    save :create_page, title, content, format
+  # The Grit::Commit instance for this page.
+  def version
+    @attributes[:version]
   end
 
-  def update(new_content = "", format = :markdown)
-    @attributes[:content] = new_content
-    @attributes[:format] = format
-
-    save :update_page, @page, content, format
+  # The commit message for this page version
+  def message
+    version.try(:message)
   end
 
-  def delete
-    if wiki.delete_page(@page)
-      true
-    else
-      false
-    end
+  def version
+    return nil unless persisted?
+
+    @version ||= Commit.new(@page.version)
   end
 
   def versions
     return [] unless persisted?
+
     @page.versions.map { |v| Commit.new(v) }
-  end
-
-  def user
-    email = @page.version.author.email
-
-    if user = User.find_by_email(email)
-      @user = user
-    else
-      @user = email
-    end
   end
 
   def created_at
     @page.version.date
-  end
-
-  def author_in_gitlab?
-    user.is_a?(User)
   end
 
   def historical?
@@ -121,6 +104,27 @@ class WikiPage
 
   def to_key
     [:title]
+  end
+
+  def create(attr = {})
+    @attributes.merge!(attr)
+
+    save :create_page, title, content, format, message
+  end
+
+  def update(new_content = "", format = :markdown, message = nil)
+    @attributes[:content] = new_content
+    @attributes[:format] = format
+
+    save :update_page, @page, content, format, message
+  end
+
+  def delete
+    if wiki.delete_page(@page)
+      true
+    else
+      false
+    end
   end
 
   private

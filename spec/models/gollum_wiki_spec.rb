@@ -126,12 +126,19 @@ describe GollumWiki do
       2.times { subject.create_page("test page", "content") }
       subject.error_message.should =~ /Duplicate page:/
     end
+
+    it "sets the correct commit message" do
+      subject.create_page("test page", "some content", :markdown, "commit message")
+      subject.pages.first.page.version.message.should == "commit message"
+    end
   end
 
   describe "#update_page" do
     before do
       create_page("update-page", "some content")
-      @page = subject.wiki.paged("update-page")
+      @gollum_page = subject.wiki.paged("update-page")
+      subject.update_page(@gollum_page, "some other content", :markdown, "updated page")
+      @page = subject.pages.first.page
     end
 
     after do
@@ -139,9 +146,11 @@ describe GollumWiki do
     end
 
     it "updates the content of the page" do
-      subject.update_page(@page, "some other content")
-      page = subject.wiki.paged("update-page")
-      page.raw_data.should == "some other content"
+      @page.raw_data.should == "some other content"
+    end
+
+    it "sets the correct commit message" do
+      @page.version.message.should == "updated page"
     end
   end
 
