@@ -41,6 +41,8 @@ module Gitlab
       #   POST /users
       post do
         authenticated_as_admin!
+        required_attributes! [:email, :password, :name, :username]
+
         attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :projects_limit, :username, :extern_uid, :provider, :bio]
         user = User.new attrs, as: :admin
         if user.save
@@ -67,11 +69,33 @@ module Gitlab
       #   PUT /users/:id
       put ":id" do
         authenticated_as_admin!
-        attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :projects_limit, :username, :extern_uid, :provider, :bio]
-        user = User.find_by_id(params[:id])
 
-        if user && user.update_attributes(attrs)
+        attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :projects_limit, :username, :extern_uid, :provider, :bio]
+        user = User.find(params[:id])
+        not_found!("User not found") unless user
+
+        if user.update_attributes(attrs)
           present user, with: Entities::User
+        else
+          not_found!
+        end
+      end
+
+      # Add ssh key to a specified user. Only available to admin users.
+      #
+      # Parameters:
+      # id (required) - The ID of a user
+      # key (required) - New SSH Key
+      # title (required) - New SSH Key's title
+      # Example Request:
+      # POST /users/:id/keys
+      post ":id/keys" do
+        authenticated_as_admin!
+        user = User.find(params[:id])
+        attrs = attributes_for_keys [:title, :key]
+        key = user.keys.new attrs
+        if key.save
+          present key, with: Entities::SSHKey
         else
           not_found!
         end
@@ -127,6 +151,8 @@ module Gitlab
       # Example Request:
       #   POST /user/keys
       post "keys" do
+        required_attributes! [:title, :key]
+
         attrs = attributes_for_keys [:title, :key]
         key = current_user.keys.new attrs
         if key.save
@@ -136,15 +162,18 @@ module Gitlab
         end
       end
 
-      # Delete existed ssh key of currently authenticated user
+      # Delete existing ssh key of currently authenticated user
       #
       # Parameters:
       #   id (required) - SSH Key ID
       # Example Request:
       #   DELETE /user/keys/:id
       delete "keys/:id" do
-        key = current_user.keys.find params[:id]
-        key.delete
+        begin
+          key = current_user.keys.find params[:id]
+          key.delete
+        rescue
+        end
       end
     end
   end

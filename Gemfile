@@ -1,4 +1,4 @@
-source "http://rubygems.org"
+source "https://rubygems.org"
 
 def darwin_only(require_as)
   RUBY_PLATFORM.include?('darwin') && require_as
@@ -109,6 +109,9 @@ gem "gollum", "~> 2.4.0", git: "git://github.com/github/gollum.git"
 # Misc
 gem "foreman"
 gem "git"
+
+# Cache
+gem "redis-rails"
 
 group :assets do
   gem "sass-rails",   "~> 3.2.5"

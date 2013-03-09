@@ -8,6 +8,7 @@ Gitlab::Application.routes.draw do
 
   # API
   require 'api'
+  Gitlab::API.logger Rails.logger
   mount Gitlab::API => '/api'
 
   constraint = lambda { |request| request.env["warden"].authenticate? and request.env['warden'].user.admin? }
@@ -165,7 +166,7 @@ Gitlab::Application.routes.draw do
   #
   # Project Area
   #
-  resources :projects, constraints: { id: /[a-zA-Z.0-9_\-\/]+/ }, except: [:new, :create, :index], path: "/" do
+  resources :projects, constraints: { id: /(?:[a-zA-Z.0-9_\-]+\/)?[a-zA-Z.0-9_\-]+/ }, except: [:new, :create, :index], path: "/" do
     member do
       get "wall"
       get "files"
@@ -174,10 +175,10 @@ Gitlab::Application.routes.draw do
     resources :blob,    only: [:show], constraints: {id: /.+/}
     resources :tree,    only: [:show, :edit, :update], constraints: {id: /.+/}
     resources :commit,  only: [:show], constraints: {id: /[[:alnum:]]{6,40}/}
-    resources :commits, only: [:show], constraints: {id: /.+/}
+    resources :commits, only: [:show], constraints: {id: /(?:[^.]|\.(?!atom$))+/, format: /atom/}
     resources :compare, only: [:index, :create]
     resources :blame,   only: [:show], constraints: {id: /.+/}
-    resources :graph,   only: [:show], constraints: {id: /.+/}
+    resources :graph,   only: [:show], constraints: {id: /(?:[^.]|\.(?!json$))+/, format: /json/}
     match "/compare/:from...:to" => "compare#show", as: "compare",
                     :via => [:get, :post], constraints: {from: /.+/, to: /.+/}
 
