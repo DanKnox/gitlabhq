@@ -69,22 +69,19 @@ class WikiPage
     @attributes[:format] || :markdown
   end
 
-  # The Grit::Commit instance for this page.
-  def version
-    @attributes[:version]
-  end
-
-  # The commit message for this page version
+  # The commit message for this page version.
   def message
     version.try(:message)
   end
 
+  # The Gitlab Commit instance for this page.
   def version
     return nil unless persisted?
 
     @version ||= Commit.new(@page.version)
   end
 
+  # Returns an array of Gitlab Commit instances.
   def versions
     return [] unless persisted?
 
