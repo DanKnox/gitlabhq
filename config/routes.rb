@@ -185,6 +185,7 @@ Gitlab::Application.routes.draw do
       collection do
         get :pages
         put ':id' => 'wikis#update'
+        get :git_access
       end
 
       member do

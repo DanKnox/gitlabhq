@@ -1,6 +1,7 @@
 %h3.page_title
   %span.cgray History for
   = @wiki.title.titleize
+  = render partial: 'main_links'
 %br
 %table
   %thead
@@ -11,17 +12,15 @@
       %th Last updated
       %th Format
   %tbody
-    - @versions.each do |version|
+    - @wiki.versions.each do |version|
       - commit = CommitDecorator.new(version)
       %tr
         %td
-          [
           = link_to project_wiki_path(@project, @wiki, version_id: commit.id) do
             = commit.short_id
-          ]
         %td= commit.author_link avatar: true, size: 24
         %td
-          = commit.message
+          = commit.title
         %td
           = time_ago_in_words(version.date)
           ago

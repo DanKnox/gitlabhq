@@ -1,4 +1,6 @@
-%h3.page_title All Pages
+%h3.page_title
+  All Pages
+  = render partial: 'main_links'
 %br
 %table
   %thead
@@ -12,7 +14,8 @@
       %tr
         %td
           %strong= link_to wiki_page.title.titleize, project_wiki_path(@project, wiki_page)
-        %td= wiki_page.format
+        %td
+          %strong= wiki_page.format
         %td
           = wiki_page.created_at.to_s(:short) do
             (#{time_ago_in_words(wiki_page.created_at)}

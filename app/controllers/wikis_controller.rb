@@ -59,7 +59,7 @@ class WikisController < ProjectResourceController
   def history
     respond_to do |format|
       if @wiki = @gollum_wiki.find_page(params[:id])
-        format.html { @versions = @wiki.versions }
+        format.html
       else
         format.html { redirect_to project_wiki_path(@project, :home), notice: "Page not found" }
       end
@@ -73,6 +73,10 @@ class WikisController < ProjectResourceController
     respond_to do |format|
       format.html { redirect_to project_wiki_path(@project, :home), notice: "Page was successfully deleted" }
     end
+  end
+
+  def git_access
+    @commits = CommitDecorator.decorate_collection(@gollum_wiki.full_history)
   end
 
   private

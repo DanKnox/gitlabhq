@@ -27,11 +27,38 @@ describe GollumWiki do
   let(:project) { create(:project) }
   let(:repository) { project.repository }
   let(:user) { project.owner }
+  let(:gitlab_shell) { Gitlab::Shell.new }
 
   subject { GollumWiki.new(project, user) }
 
   before do
     create_temp_repo(subject.send(:path_to_repo))
+  end
+
+  describe "#path_with_namespace" do
+    it "returns the project path with namespace with the .wiki extension" do
+      subject.path_with_namespace.should == project.path_with_namespace + ".wiki"
+    end
+  end
+
+  describe "#url_to_repo" do
+    it "returns the correct ssh url to the repo" do
+      subject.url_to_repo.should == gitlab_shell.url_to_repo(subject.path_with_namespace)
+    end
+  end
+
+  describe "#ssh_url_to_repo" do
+    it "equals #url_to_repo" do
+      subject.ssh_url_to_repo.should == subject.url_to_repo
+    end
+  end
+
+  describe "#http_url_to_repo" do
+    it "provides the full http url to the repo" do
+      gitlab_url = Gitlab.config.gitlab.url
+      repo_http_url = "#{gitlab_url}/#{subject.path_with_namespace}.git"
+      subject.http_url_to_repo.should == repo_http_url
+    end
   end
 
   describe "#wiki" do

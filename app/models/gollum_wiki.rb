@@ -21,6 +21,22 @@ class GollumWiki
     @user = user
   end
 
+  def path_with_namespace
+    @project.path_with_namespace + ".wiki"
+  end
+
+  def url_to_repo
+    gitlab_shell.url_to_repo(path_with_namespace)
+  end
+
+  def ssh_url_to_repo
+    url_to_repo
+  end
+
+  def http_url_to_repo
+    http_url = [Gitlab.config.gitlab.url, "/", path_with_namespace, ".git"].join('')
+  end
+
   def wiki
     @wiki ||= begin
       Gollum::Wiki.new(path_to_repo)
@@ -31,6 +47,10 @@ class GollumWiki
 
   def pages
     wiki.pages.map { |page| WikiPage.new(self, page, true) }
+  end
+
+  def full_history
+    Commit.fresh_commits(wiki.repo, 30)
   end
 
   def find_page(title, version = nil)
@@ -78,10 +98,6 @@ class GollumWiki
 
   def default_message(action, title)
     "#{@user.username} #{action} page: #{title}"
-  end
-
-  def path_with_namespace
-    @project.path_with_namespace + ".wiki"
   end
 
   def gitlab_shell

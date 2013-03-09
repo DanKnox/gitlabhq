@@ -156,8 +156,9 @@ describe WikiPage do
     end
 
     it "returns an array of all commits for the page" do
+      3.times { |i| @page.update("content #{i}") }
       history = @page.versions
-      @page.versions.count.should == 1
+      @page.versions.count.should == 4
     end
   end
 
