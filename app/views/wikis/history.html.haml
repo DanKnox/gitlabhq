@@ -16,7 +16,7 @@
       %tr
         %td
           [
-          = link_to "/#{@project.path_with_namespace}/wikis/#{@wiki.slug}?version_id=#{commit.id}" do
+          = link_to project_wiki_path(@project, @wiki, version_id: commit.id) do
             = commit.short_id
           ]
         %td= commit.author_link avatar: true, size: 24
