@@ -1,19 +1,20 @@
 class WikiPage
+  include ActiveModel::Validations
+  include ActiveModel::Conversion
+  include StaticModel
+  extend ActiveModel::Naming
+
+  def self.primary_key
+    'slug'
+  end
 
   def self.model_name
-    @_model_name ||= ActiveModel::Name.new(self, Project, "wiki")
+    ActiveModel::Name.new(self, nil, 'wiki')
   end
 
-  def self.param_key
-    "wiki"
+  def to_key
+    [:slug]
   end
-
-  def self.route_key
-    "title"
-  end
-
-  extend ActiveModel::Naming
-  include ActiveModel::Validations
 
   validates :title, presence: true
   validates :content, presence: true
@@ -102,10 +103,6 @@ class WikiPage
     @persisted == true
   end
 
-  def to_key
-    [:title]
-  end
-
   def create(attr = {})
     @attributes.merge!(attr)
 
@@ -140,7 +137,9 @@ class WikiPage
   def save(method, *args)
     if valid? && wiki.send(method, *args)
       @page = wiki.wiki.paged(title)
+
       set_attributes
+
       @persisted = true
     else
       errors.add(:base, wiki.error_message) if wiki.error_message
