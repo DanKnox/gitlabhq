@@ -14,6 +14,8 @@ class GollumWiki
 
   class CouldNotCreateWikiError < StandardError; end
 
+  # Returns a string describing what went wrong after
+  # an operation fails.
   attr_reader :error_message
 
   def initialize(project, user = nil)
@@ -37,6 +39,7 @@ class GollumWiki
     http_url = [Gitlab.config.gitlab.url, "/", path_with_namespace, ".git"].join('')
   end
 
+  # Returns the Gollum::Wiki object.
   def wiki
     @wiki ||= begin
       Gollum::Wiki.new(path_to_repo)
@@ -45,14 +48,25 @@ class GollumWiki
     end
   end
 
+  # Returns an Array of Gitlab WikiPage instances or an
+  # empty Array if this Wiki has no pages.
   def pages
     wiki.pages.map { |page| WikiPage.new(self, page, true) }
   end
 
-  def full_history
+  # Returns the last 30 Commit objects accross the entire
+  # repository.
+  def recent_history
     Commit.fresh_commits(wiki.repo, 30)
   end
 
+  # Finds a page within the repository based on a tile
+  # or slug.
+  #
+  # title - The human readable or parameterized title of
+  #         the page.
+  #
+  # Returns an initialized WikiPage instance or nil
   def find_page(title, version = nil)
     if page = wiki.page(title, version)
       WikiPage.new(self, page, true)

@@ -9,22 +9,15 @@ class WikisController < ProjectResourceController
   end
 
   def show
-    if params[:version_id]
-      @wiki = @gollum_wiki.find_page(params[:id], params[:version_id])
-    else
-      @wiki = @gollum_wiki.find_page(params[:id])
-    end
+    @wiki = @gollum_wiki.find_page(params[:id], params[:version_id])
 
     if @wiki
       render 'show'
     else
-      if can?(current_user, :write_wiki, @project)
-        @wiki = WikiPage.new(@gollum_wiki)
-        @wiki.title = params[:id]
-        render 'edit'
-      else
-        render 'empty'
-      end
+      return render('empty') unless can?(current_user, :write_wiki, @project)
+      @wiki = WikiPage.new(@gollum_wiki)
+      @wiki.title = params[:id]
+      render 'edit'
     end
   end
 
@@ -37,10 +30,12 @@ class WikisController < ProjectResourceController
 
     return render('empty') unless can?(current_user, :write_wiki, @project)
 
-    if @wiki.update(content, format, message)
-      redirect_to [@project, @wiki], notice: 'Wiki was successfully updated.'
-    else
-      render 'edit'
+    respond_to do |format|
+      if @wiki.update(content, format, message)
+        format.html { redirect_to [@project, @wiki], notice: 'Wiki was successfully updated.' }
+      else
+        format.html { render 'edit' }
+      end
     end
   end
 
@@ -76,7 +71,9 @@ class WikisController < ProjectResourceController
   end
 
   def git_access
-    @commits = CommitDecorator.decorate_collection(@gollum_wiki.full_history)
+    respond_to do |format|
+      format.html
+    end
   end
 
   private
