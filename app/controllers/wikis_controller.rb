@@ -49,7 +49,7 @@ class WikisController < ProjectResourceController
 
     respond_to do |format|
       if @wiki.create(wiki_params)
-        format.thml { redirect_to [@project, @wiki], notice: 'Wiki was successfully updated.' }
+        format.html { redirect_to project_wiki_path(@project, @wiki), notice: 'Wiki was successfully updated.' }
       else
         format.html { render action: "edit" }
       end
@@ -61,7 +61,7 @@ class WikisController < ProjectResourceController
       if @wiki = @gollum_wiki.find_page(params[:id])
         format.html { @versions = @wiki.versions }
       else
-        format.html { redirect_to project_wiki_path(@project, :index), notice: "Page not found" }
+        format.html { redirect_to project_wiki_path(@project, :home), notice: "Page not found" }
       end
     end
   end
@@ -71,7 +71,7 @@ class WikisController < ProjectResourceController
     @wiki.delete if @wiki
 
     respond_to do |format|
-      format.html { redirect_to project_wiki_path(@project, :index), notice: "Page was successfully deleted" }
+      format.html { redirect_to project_wiki_path(@project, :home), notice: "Page was successfully deleted" }
     end
   end
 
